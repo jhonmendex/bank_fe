@@ -56,7 +56,7 @@ export default {
     methods: {
         processSignUp: function(){
             axios.post(
-                "https://mision-tic-bank-be.herokuapp.com/user/", 
+                "http://localhost:8000/user/", 
                 this.user,  
                 {headers: {}}
             )
@@ -71,7 +71,7 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error)
-                    alert("Erroe en el resgistro.");
+                    alert("Error en el resgistro.");
                     
                     
                 });
@@ -79,11 +79,6 @@ export default {
     }
 }
 </script>
-
-
-
-
-
 
 <style>
 
