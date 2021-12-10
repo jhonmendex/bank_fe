@@ -1,19 +1,16 @@
 <template>
   <div id="app" class="app">
-
     <div class="header">
-
       <h1> Banco Mision TIC </h1>
       <nav>
         <button v-if="is_auth" v-on:click="loadHome"> Inicio </button>
+        <button v-if="is_auth" v-on:click="loadTransaction"> Realizar transacción </button>
         <button v-if="is_auth" v-on:click="loadAccount"> Cuenta </button>
         <button v-if="is_auth" v-on:click="logOut"> Cerrar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadLogIn" > Iniciar Sesión </button>
         <button v-if="!is_auth" v-on:click="loadSignUp" > Registrarse </button>
       </nav>
     </div>
-    
-
     <div class="main-component">
       <router-view  
         v-on:completedLogIn="completedLogIn"
@@ -22,31 +19,20 @@
       >
       </router-view>
     </div>
-    
-
     <div class="footer">
       <h2>Misión TIC 2022</h2>
     </div>
-
   </div>
 </template>
-
-
-
-
 <script>
 export default {
   name: 'App',
 
   data: function(){
       return{
-        is_auth: false
+        is_auth: false,
       }
   },
-
-  components: {
-  },
-
   methods:{
     verifyAuth: function() {
       this.is_auth = localStorage.getItem("isAuth") || false;
@@ -86,26 +72,21 @@ export default {
     loadAccount: function () {
 			this.$router.push({ name: "account" });
 		},
-
     logOut: function () {
 			localStorage.clear();
 			alert("Sesión Cerrada");
 			this.verifyAuth();
 		},
+    loadTransaction: function () {
+      this.$router.push({ name: "transaction" });
+    }
   },
 
   created: function(){
     this.verifyAuth()
   }
-
 }
 </script>
-
-
-
-
-
-
 <style>
 
   body{
@@ -134,7 +115,7 @@ export default {
 
   .header nav {
     height: 100%;
-    width: 20%;
+    width: 40%;
 
     display: flex;
     justify-content: space-around;

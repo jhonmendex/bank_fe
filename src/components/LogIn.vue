@@ -1,5 +1,4 @@
 <template>
-
     <div class="logIn_user">
         <div class="container_logIn_user">
             <h2>Iniciar sesión</h2>
@@ -11,12 +10,10 @@
                 <button type="submit">Iniciar Sesion</button>
             </form>
         </div>
-
     </div>
-
 </template>
 <script>
-import axios from 'axios';
+import ggl from "graphql-tag";
 
 export default {
     name: "LogIn",
@@ -31,35 +28,37 @@ export default {
     },
 
     methods: {
-        processLogInUser: function(){
-            axios.post(
-                "http://localhost:8000/login/", 
-                this.user,  
-                {headers: {}}
-                )
-                .then((result) => {
-                    let dataLogIn = {
-                        username: this.user.username,
-                        token_access: result.data.access,
-                        token_refresh: result.data.refresh,
-                    }
-                    
-                    this.$emit('completedLogIn', dataLogIn)
-                })
-                .catch((error) => {
-                    
-                    if (error.response.status == "401")
-                        alert("ERROR 401: Credenciales Incorrectas.");
-                    
-                });
-        }
+        processLogInUser: async function(){
+             await this.$apollo.mutate({ mutation: ggl `
+              mutation LogIn($credentials: CredentialsInput!) {
+                logIn(credentials: $credentials) {
+                    access
+                    refresh
+                }
+              }             
+             `,
+             variables: {
+                 credentials: this.user
+             }              
+        }).then((response)=>{
+           let dataLogin = {
+              username: this.user.username,
+              token_access: response.data.logIn.access,
+              token_refresh: response.data.logIn.refresh
+           };
+           this.$emit("completedLogIn",dataLogin)
+        }).catch((error)=>{
+           console.log(error);
+           alert("Error al iniciar sesión, datos incorrectos");
+        })
     }
+} 
 }
 </script>
 
 <style>
 .logIn_user {
-    argin: 0;
+    margin: 0;
     padding: 0%;
     height: 100%;
     width: 100%;
@@ -67,9 +66,8 @@ export default {
     justify-content: center;
     align-items: center;
 }
-
-    .container_logIn_user {
-    border: 3px solid  #283747;
+.container_logIn_user {
+    border: 3px solid #283747;
     border-radius: 10px;
     width: 25%;
     height: 60%;
